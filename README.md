@@ -1,3 +1,5 @@
+# avr-pi-0
+
 ## Required packages
 ```
 sudo apt-get update; sudo apt-get upgrade -y
@@ -34,7 +36,7 @@ programmer
 sudo avrdude -c linuxgpio -p attiny85 -v
 ```
 
-# Pin connections
+## Pin connections
 ```
               1 -> PB5 (~RESET)
  8  7  6  5   2 -> PB3
