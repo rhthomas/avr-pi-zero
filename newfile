@@ -1,0 +1,22 @@
+#!/bin/bash
+# autogen blank c file inc header comments
+
+cat >> $1 << EOF
+// file    : $1
+// author  : Rhys Thomas
+// created : $(date +%F)
+/*
+ */
+
+#define F_CPU 1000000L // 1MHz internal clock
+#include <avr/io.h>
+#include <util/delay.h>
+
+int main(void)
+{
+
+
+    return 0;
+}
+EOF
+

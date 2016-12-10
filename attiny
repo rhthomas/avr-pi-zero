@@ -1,0 +1,43 @@
+#!/bin/bash
+# upload c code to attiny85
+# usage: ./attiny file.c -quiet
+#        quiet prints avrdude output to /dev/null
+
+echo "Compiling" $1
+
+# generate elf
+touch "temp.avr-gcc.output"
+avr-gcc -mmcu=attiny85 -Os $1 -Wall -o temp.elf -std=c99 >> temp.avr-gcc.output 2>&1
+if [[ -f temp.elf ]]
+then
+    echo "Successfully compiled"
+    echo "Generating hex file..."
+    # generate hex
+    touch "temp.avr-objcopy.output"
+    avr-objcopy -O ihex temp.elf temp.hex >> temp.avr-objcopy.output 2>&1
+    if [[ -f temp.hex ]]
+    then
+        echo "Complete"
+        echo "Programming device..."
+        # determine whether to show avrdude or not
+        if [[ $2 = '-quiet' ]]
+        then
+        	location=/dev/null
+        else
+        	location=/dev/stdout
+        fi
+        # uploading to board
+        sudo avrdude -c linuxgpio -p t85 -U flash:w:temp.hex >> $location 2>&1
+    else
+        echo "Failed to generate hex"
+        cat temp.avr-objcopy.output
+    fi
+else
+    echo "Code does not compile"
+    cat temp.avr-gcc.output
+fi
+
+# cleaning things up
+echo "Cleaning..."
+rm temp.* >> /dev/null 2>&1
+echo "Done"
