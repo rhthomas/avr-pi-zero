@@ -41,8 +41,8 @@ int main(void)
     intInit();
     shiftInit();
 
-	// clear register of old code data
-	shiftOut(0x00);
+    // clear register of old code data
+    shiftOut(0x00);
 
     for(;;) {
         if(time!=0) {
