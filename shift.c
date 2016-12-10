@@ -21,6 +21,5 @@ int main(void)
             _delay_ms(100);
         }
     }
-
     return 0;
 }
