@@ -17,7 +17,6 @@ int main(void)
         PORTB ^= 0xFF; // invert all pins
         _delay_ms(1000);
     }
-
     return 0;
 }
 
