@@ -22,9 +22,9 @@ then
         # determine whether to show avrdude or not
         if [[ $2 = '-quiet' ]]
         then
-        	location=/dev/null
+            location=/dev/null
         else
-        	location=/dev/stdout
+            location=/dev/stdout
         fi
         # uploading to board
         sudo avrdude -c linuxgpio -p t85 -U flash:w:temp.hex >> $location 2>&1
