@@ -2,49 +2,31 @@
 // author  : Rhys Thomas
 // created : 2016-12-09
 /* linear feedback shift register with taps at
- * bits 0 and 3. uses interrupts to trigger the
- * do{}while. triggering the do while inside the
- * interrupt meant that if the switch bounced it
- * would run again. this flag method only runs once!
+ * bits 0 and 3.
  */
 
 #define F_CPU 1000000L // 1MHz internal clock
 #include <avr/io.h>
-#include <avr/interrupt.h>
 #include <util/delay.h>
 #include "regs.h"
-
-// apparently bool is not a variable type in c?
-typedef enum {false, true} bool;
-volatile bool go;
-
-void intInit(void)
-{
-    cli();
-    MCUCR |= _BV(ISC01) | _BV(ISC00);
-    GIMSK |= _BV(INT0);
-    sei();
-}
-
-ISR(INT0_vect)
-{
-    go = true;
-}
 
 int main(void)
 {
     shiftInit();
-    intInit();
     shiftOut(0x00);
+
+    DDRB &= ~_BV(PB2); // set PB2 as input
+    PORTB |= _BV(PB2); // enable pullups
 
     uint8_t bit;
     uint8_t start_state = 0x2b;
     uint8_t lfsr = start_state;
 
+    // show the initial state
     shiftOut(lfsr);
 
     for(;;) {
-        if(go) {
+        if(PINB & _BV(PB2)) {
             /* need to use do{}while rather than just while because at
              * the start lfsr=start_state and so the code would never
              * enter the while loop.
@@ -55,8 +37,6 @@ int main(void)
                 shiftOut(lfsr);
                 _delay_ms(200);
             } while(lfsr!=start_state);
-            // reset flag
-            go = false;
         }
     }
     return 0;
