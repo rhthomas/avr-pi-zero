@@ -8,7 +8,7 @@
 #define F_CPU 1000000L // 1MHz internal clock
 #include <avr/io.h>
 #include <util/delay.h>
-#include "regs.h"
+#include "sipo.h"
 
 int main(void)
 {

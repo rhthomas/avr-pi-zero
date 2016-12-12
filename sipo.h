@@ -1,4 +1,4 @@
-// file    : regs.h
+// file    : sipo.h
 // author  : Rhys Thomas
 // created : 2016-12-06
 /* This header file contains the code
