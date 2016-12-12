@@ -24,10 +24,10 @@ programmer
   id    = "linuxgpio";
   desc  = "Use the Linux sysfs interface to bitbang GPIO lines";
   type  = "linuxgpio";
-  reset = 25;
-  sck   = 17;
-  mosi  = 10;
-  miso  = 9;
+  reset = 26;
+  sck   = 6;
+  mosi  = 19;
+  miso  = 13;
 ;
 ```
 
@@ -49,8 +49,8 @@ sudo avrdude -c linuxgpio -p attiny85 -v
 Raspberry Pi
 1  -> VCC
 6  -> GND
-22 -> GPIO25 (RESET)
-19 -> GPIO10 (MOSI)
-21 -> GPIO09 (MISO)
-11 -> GPIO17 (SCK)
+37 -> GPIO26 (RESET)
+35 -> GPIO19 (MOSI)
+33 -> GPIO13 (MISO)
+31 -> GPIO06 (SCK)
 ```
