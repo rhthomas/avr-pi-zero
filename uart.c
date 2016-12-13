@@ -21,6 +21,9 @@ int main(void)
     uint8_t count=0;
     char str[80]; // store sprintf string here
 
+    // newline after the mess of flashing chip
+    sendStrBySerial("\r\n");
+
     for(;;) {
         _delay_ms(75);
         // screen wants \r\n
