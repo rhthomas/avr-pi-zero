@@ -38,11 +38,9 @@ void initSerial(const uint8_t portPin)
     // set pin as output
     DDRB |= _BV(txData.pin);
     PORTB |= _BV(txData.pin);
-    // 1MHz/9600 = 104.166
-    // (104/8)-1 = 12, clk prescaler of 8
-    OCR0A = 12; // top value of counter0
     TCCR0A |= _BV(WGM01); // ctc mode
-    TCCR0B |= _BV(CS01); // clk/8 prescaler
+    OCR0A = 104; // 1MHz/9600 = 104.166
+    TCCR0B |= _BV(CS00); // no prescaler
 }
 
 ISR(TIMER0_COMPA_vect)
