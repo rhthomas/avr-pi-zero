@@ -1,9 +1,8 @@
 // file    : sipo.h
 // author  : Rhys Thomas
 // created : 2016-12-06
-/* This header file contains the code
- * necessary in order to drive a 595
- * 8-bit shift register on an attiny85.
+/* This header file contains the code necessary in order
+ * to drive a 595 8-bit shift register on an attiny85.
  */
 
 #include <avr/io.h>
