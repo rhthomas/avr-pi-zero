@@ -18,8 +18,7 @@ then
     if [[ -f temp.hex ]]
     then
         echo "Complete"
-        size=$(stat --printf="%s" temp.hex)
-        echo "Writing $size bytes to device..."
+        echo "Writing file to device..."
         # determine whether to show avrdude or not
         if [[ $2 = '-quiet' ]]
         then
