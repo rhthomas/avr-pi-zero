@@ -7,7 +7,7 @@ echo "Compiling" $1
 
 # generate elf
 touch "temp.avr-gcc.output"
-avr-gcc -mmcu=attiny85 -Os $1 -Wall -o temp.elf -std=c99 >> temp.avr-gcc.output 2>&1
+avr-gcc -mmcu=attiny85 -Os $1 -Wall -o temp.elf >> temp.avr-gcc.output 2>&1
 if [[ -f temp.elf ]]
 then
     echo "Successfully compiled"
@@ -15,10 +15,11 @@ then
     # generate hex
     touch "temp.avr-objcopy.output"
     avr-objcopy -O ihex temp.elf temp.hex >> temp.avr-objcopy.output 2>&1
-    if [[ -f temp.hex ]]
+    if [[ -f hex.hex ]]
     then
         echo "Complete"
-        echo "Programming device..."
+        size=$(stat --printf="%s" temp.hex)
+        echo "Writing $size bytes to device..."
         # determine whether to show avrdude or not
         if [[ $2 = '-quiet' ]]
         then
