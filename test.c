@@ -18,6 +18,5 @@ int main(void)
         sendStrBySerial("Hello, world!\r\n");
         _delay_ms(1000);
     }
-
     return 0;
 }
