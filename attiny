@@ -15,7 +15,7 @@ then
     # generate hex
     touch "temp.avr-objcopy.output"
     avr-objcopy -O ihex temp.elf temp.hex >> temp.avr-objcopy.output 2>&1
-    if [[ -f hex.hex ]]
+    if [[ -f temp.hex ]]
     then
         echo "Complete"
         size=$(stat --printf="%s" temp.hex)
