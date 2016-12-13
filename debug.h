@@ -1,15 +1,13 @@
 // file    : debug.c
 // author  : Rhys Thomas
 // created : 2016-12-13
-/* header for uart communications between attiny
- * and GPIO15 of the raspberry pi. adapted from
- * http://www.idogendel.com/en/archives/406 to use
- * the 1MHz internal clock of the tiny85
+/* header for uart communications between attiny and GPIO15 of the
+ * raspberry pi. adapted from http://www.idogendel.com/en/archives/406
+ * to use the 1MHz internal clock of the tiny85
  */
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
 
 volatile struct {
     uint8_t dataByte, bitsLeft, pin, done;
