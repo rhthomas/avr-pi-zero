@@ -15,7 +15,7 @@
 
 int main(void)
 {
-    initSerial(PB0);
+    initSerial(PB3);
     sei(); // enable interrupts
 
     uint8_t count=0;
