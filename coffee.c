@@ -39,7 +39,8 @@ ISR(INT0_vect)
 int main(void)
 {
     intInit();
-    shiftInit();
+    // data,latch,clock
+    shiftInit(PB0,PB1,PB3);
 
     // clear register of old code data
     shiftOut(0x00);

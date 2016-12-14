@@ -33,7 +33,8 @@ int main(void)
     uint8_t result,ledNum;
 
     initAdc();
-    shiftInit();
+    // data,latch,clock
+    shiftInit(PB0,PB1,PB3);
 
     for(;;) {
         /* drop the last 2 bits of the
