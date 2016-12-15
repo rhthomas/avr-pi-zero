@@ -1,7 +1,7 @@
 // file    : fcount.c
 // author  : Rhys Thomas
 // created : 2016-12-14
-/* frequency counter.
+/* frequency counter. run with -u vfprintf -lprintf_flt
  * todo:
  * [ ] get it working with 1Hz square wave
  * [ ] use comparator on ADC (see T3 lab)
@@ -19,7 +19,6 @@ volatile bool print=false; // flag to tell main to print
 volatile uint16_t overflow=0; // number times the system overflows
 volatile float new_freq=0; // calculated frequency from ext. interrupt
 volatile uint8_t count=0;
-
 
 /* current issues:
  * All code works and external interrupt behaves as expected.
@@ -61,14 +60,14 @@ ISR(INT0_vect)
 }
 
 // count number of overflows
-ISR(TIMER1_OVF){overflow++;}
+ISR(TIMER1_OVF_vect){overflow++;}
 
 int main(void)
 {
     DDRB |= _BV(PB4);
     PORTB &= ~_BV(PB4);
 
-    //timer1_init(); // this is breaking things
+    timer1_init();
     extInterrupt();
     initSerial(PB3);
     sei();
@@ -76,7 +75,6 @@ int main(void)
     char str[80];
 
     for(;;){
-        /* everything handled by interrupts */
         if(print) {
             sprintf(str,"freq: %.2f\r\n",new_freq);
             sendStrBySerial(str);
