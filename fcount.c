@@ -11,10 +11,27 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include "debug.h"
 
+typedef enum {false, true} bool;
+
+volatile bool print=false; // flag to tell main to print
 volatile uint16_t overflow=0; // number times the system overflows
 volatile float new_freq=0; // calculated frequency from ext. interrupt
 volatile uint8_t count=0;
+
+
+/* current issues:
+ * All code works and external interrupt behaves as expected.
+ * However when timer1 is involved the external interrupt falls
+ * over. This can be seen by the led on PB4 flashing rather than
+ * staying high for one clock cycle. What is going on here?
+ */
+void timer1_init(void)
+{
+    TCCR1 |= _BV(CS10); // no prescaling
+    TIMSK |= _BV(TOIE1); // enable overflow interrupt
+}
 
 void extInterrupt(void)
 {
@@ -38,15 +55,9 @@ ISR(INT0_vect)
         // calculate measured frequency
         uint16_t total_ticks = (overflow*255)+TCNT1;
         new_freq = F_CPU/total_ticks;
+        print = true;
         PORTB &= ~_BV(PB4);
     }
-}
-
-void timer1_init(void)
-{
-    TCCR1 |= _BV(CS10); // no prescaling
-    TIMSK |= _BV(TOIE1); // enable overflow interrupt
-    TCNT1 = 0; // initialise counter
 }
 
 // count number of overflows
@@ -57,10 +68,20 @@ int main(void)
     DDRB |= _BV(PB4);
     PORTB &= ~_BV(PB4);
 
-    timer1_init();
+    //timer1_init(); // this is breaking things
     extInterrupt();
+    initSerial(PB3);
     sei();
 
-    for(;;){/* everything handled by interrupts */}
+    char str[80];
+
+    for(;;){
+        /* everything handled by interrupts */
+        if(print) {
+            sprintf(str,"freq: %.2f\r\n",new_freq);
+            sendStrBySerial(str);
+            print = false; // reset print flag
+        }
+    }
     return 0;
 }
