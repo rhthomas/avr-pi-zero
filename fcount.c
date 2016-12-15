@@ -9,7 +9,6 @@
 
 #define F_CPU 1000000L // 1MHz internal clock
 #include <avr/io.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
 #include "debug.h"
 
@@ -17,7 +16,7 @@ typedef enum {false, true} bool;
 
 volatile bool print=false; // flag to tell main to print
 volatile uint16_t overflow=0; // number times the system overflows
-volatile float new_freq=0; // calculated frequency from ext. interrupt
+volatile float new_freq=0.0; // calculated frequency from ext. interrupt
 volatile uint8_t count=0;
 
 void timer1_init(void)
@@ -44,17 +43,17 @@ ISR(INT0_vect)
     }
     // else, calculate freq and reset count
     else {
+        float total_ticks = TCNT1+(overflow*255);
+        new_freq = 1000000.0/total_ticks;
         count = 0; // reset count
-        // calculate measured frequency
-        uint16_t total_ticks = (overflow*255)+TCNT1;
-        new_freq = F_CPU/total_ticks;
         print = true;
         PORTB &= ~_BV(PB4);
     }
 }
 
 // count number of overflows
-ISR(TIMER1_OVF_vect){overflow++;}
+// this interrupts comms so ISR_NOBLOCK needed
+ISR(TIMER1_OVF_vect,ISR_NOBLOCK){overflow++;}
 
 int main(void)
 {
