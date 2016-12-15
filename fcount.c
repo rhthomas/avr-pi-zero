@@ -20,12 +20,6 @@ volatile uint16_t overflow=0; // number times the system overflows
 volatile float new_freq=0; // calculated frequency from ext. interrupt
 volatile uint8_t count=0;
 
-/* current issues:
- * All code works and external interrupt behaves as expected.
- * However when timer1 is involved the external interrupt falls
- * over. This can be seen by the led on PB4 flashing rather than
- * staying high for one clock cycle. What is going on here?
- */
 void timer1_init(void)
 {
     TCCR1 |= _BV(CS10); // no prescaling
@@ -67,9 +61,9 @@ int main(void)
     DDRB |= _BV(PB4);
     PORTB &= ~_BV(PB4);
 
+    initSerial(PB3);
     timer1_init();
     extInterrupt();
-    initSerial(PB3);
     sei();
 
     char str[80];
