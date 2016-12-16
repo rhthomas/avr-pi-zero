@@ -16,7 +16,7 @@ int main(void)
     for(;;) {
         PORTB ^= 0xFF; // invert all pins
         //_delay_ms(1000); // period 2, freq 0.5
-        _delay_ms(500); // period 1, freq 1
+        _delay_ms(16); // period 32ms, freq ~30
     }
     return 0;
 }
