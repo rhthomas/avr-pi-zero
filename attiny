@@ -1,7 +1,5 @@
 #!/bin/bash
 # upload c code to attiny85
-# usage: ./attiny file.c -quiet
-#        quiet prints avrdude output to /dev/null
 
 echo "Compiling" $1
 
@@ -20,7 +18,7 @@ then
         echo "Complete"
         echo "Writing file to device..."
         # uploading to board
-        sudo avrdude -c linuxgpio -p t85 -U flash:w:temp.hex #>> $location 2>&1
+        sudo avrdude -c linuxgpio -p t85 -U flash:w:temp.hex
     else
         echo "Failed to generate hex"
         cat temp.avr-objcopy.output
