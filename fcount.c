@@ -6,7 +6,7 @@
  * [x] get it working with 1Hz square wave
  *     ^ sort of, anything >20Hz works.
  *     ^ anything less comes out as 20Hz, this must be times to calculate freq etc?
- * [ ] use comparator on ADC (see T3 lab)
+ * [ ] use comparator on ADC
  */
 
 #define F_CPU 1000000L // 1MHz internal clock
