@@ -11,7 +11,7 @@
 
 volatile struct {
     uint8_t data, latch, clock, num;
-} regs = {0,0,0};
+} regs;
 
 void shiftInit(uint8_t dataPin, uint8_t latchPin, uint8_t clockPin, uint8_t num)
 {
