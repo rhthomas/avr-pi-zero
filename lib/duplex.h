@@ -10,12 +10,7 @@
 // txData
 volatile struct {
     uint8_t dataByte, bitsLeft, pin, done;
-} txData = {0,0,0,0};
-
-// rxData
-volatile struct {
-    uint8_t dataByte, bitsLeft, pin, done;
-} rxData = {0,0,0,0};
+} txData, rxData;
 
 void serial_init(const uint8_t txPin, const uint8_t rxPin)
 {
