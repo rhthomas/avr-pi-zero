@@ -1,4 +1,4 @@
-# avr-pi-0
+# avr-pi-zero
 
 ## Required packages
 ```
