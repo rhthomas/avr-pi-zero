@@ -1,9 +1,8 @@
 // file    : sipo.h
 // author  : Rhys Thomas
 // created : 2016-12-06
-/* This header file contains the code necessary in order
- * to drive a 595 8-bit shift register on an attiny85.
- * Connect pins 10 and 13 to VCC and GND respectivly
+/* Header contains the functions to drive 74HC595 8-bit
+ * serial-in/parallel-out shift regsiter.
  */
 
 #include <avr/io.h>
