@@ -12,8 +12,8 @@
 
 int main(void)
 {
-    // data,latch,clock
-    shiftInit(PB0,PB1,PB3);
+    // data,latch,clock,num
+    shiftInit(PB0,PB1,PB3,1);
 
     for(;;) {
         // counts from 0 to 255 and displays on leds

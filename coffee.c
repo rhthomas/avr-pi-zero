@@ -40,7 +40,7 @@ int main(void)
 {
     intInit();
     // data,latch,clock
-    shiftInit(PB0,PB1,PB3);
+    shiftInit(PB0,PB1,PB3,1);
 
     // clear register of old code data
     shiftOut(0x00);

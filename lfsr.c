@@ -13,7 +13,7 @@
 int main(void)
 {
     // data,latch,clock
-    shiftInit(PB0,PB1,PB3);
+    shiftInit(PB0,PB1,PB3,1);
     shiftOut(0x00);
 
     DDRB &= ~_BV(PB2); // set PB2 as input

@@ -29,7 +29,7 @@ void shiftOut(uint8_t val)
 {
     for(uint8_t i=0; i<(8*regs.num); i++) {
         // tests MSB of val
-        if(val & pow(2,regs.num-1)) { // 0b10000000 for one 595
+        if(val & pow(2,(8*regs.num)-1)) { // 0b10000000 for one 595
             PORTB |= regs.data;
         }
         else {
