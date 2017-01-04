@@ -33,22 +33,20 @@ int main(void)
     uint8_t result,ledNum;
 
     initAdc();
-    // data,latch,clock
-    shiftInit(PB0,PB1,PB3);
+    // data,latch,clock,num
+    shiftInit(PB0,PB1,PB3,1);
 
     for(;;) {
-        /* drop the last 2 bits of the
-         * adc reading since we only have
-         * 8 leds on the shift register
+        /* drop the last 2 bits of the adc reading since
+         * we only have 8 leds on the shift register
          */
         result = readAdc() >> 2;
 
-        // max led to light up
+        // max led to light up, this is effectivly log_2(result)
         ledNum = log(result)/log(2);
         // shift 1 to the led to turn on
         shiftOut(1<<ledNum);
         _delay_ms(100);
     }
-
     return 0;
 }
