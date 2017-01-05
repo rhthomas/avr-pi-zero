@@ -15,23 +15,23 @@
 
 int main(void)
 {
-    initSerial(PB3);
+    setup_serial(PB3);
     sei(); // enable interrupts
 
     uint8_t count=0;
     char str[80]; // store sprintf string here
 
     // newline after the mess of flashing chip
-    sendStrBySerial("\r\n");
+    serial_print("\r\n");
 
     for(;;) {
         _delay_ms(75);
         // screen wants \r\n
         sprintf(str,"count: %i\r\n",count);
-        sendStrBySerial(str);
+        serial_print(str);
         if(count==200) {
             sprintf(str,"overflow soon!\r\n");
-            sendStrBySerial(str);
+            serial_print(str);
         }
         count++;
     }

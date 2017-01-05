@@ -13,7 +13,7 @@ volatile struct {
     uint8_t dataByte, bitsLeft, pin, done;
 } txData = {0,0,0,0};
 
-void sendBySerial(const uint8_t data)
+void send_serial(const uint8_t data)
 {
     txData.dataByte = data;
     txData.bitsLeft = 10;
@@ -24,7 +24,7 @@ void sendBySerial(const uint8_t data)
     TIMSK |= _BV(OCIE0A);
 }
 
-void sendStrBySerial(char *p)
+void serial_print(char *p)
 {
     while(*p != '\0') {
         sendBySerial(*p++);
@@ -32,7 +32,7 @@ void sendStrBySerial(char *p)
     }
 }
 
-void initSerial(const uint8_t portPin)
+void setup_serial(const uint8_t portPin)
 {
     txData.pin = portPin;
     // set pin as output

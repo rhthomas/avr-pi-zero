@@ -7,6 +7,7 @@
  *     ^ sort of, anything >20Hz works.
  *     ^ anything less comes out as 20Hz, this must be times to calculate freq etc?
  * [ ] use comparator on ADC
+ * [ ] take readings every x seconds and calculate average (need to create a timer)
  */
 
 #define F_CPU 1000000L // 1MHz internal clock
@@ -20,18 +21,19 @@ volatile uint16_t overflow=0; // number times the system overflows
 volatile float freq;
 volatile uint8_t count;
 
-void timer1_init(void)
+void init_timer1(void)
 {
     TCCR1 |= _BV(CS10); // no prescaling
     TIMSK |= _BV(TOIE1); // enable overflow interrupt
 }
 
-void external_init(void)
+void setup_interrupts(void)
 {
     MCUCR |= _BV(ISC01) | _BV(ISC00); // trigger interrupt on rising edge
     GIMSK |= _BV(INT0); // set external interrupt
 }
 
+// change ISR so that it triggers when comparator is high
 ISR(INT0_vect)
 {
     count++;
@@ -61,9 +63,9 @@ int main(void)
     DDRB |= _BV(PB4);
     PORTB &= ~_BV(PB4);
 
-    initSerial(PB3);
-    timer1_init();
-    external_init();
+    setup_serial(PB3);
+    inti_timer1();
+    setup_interrupts();
     sei();
 
     char str[10];
@@ -71,7 +73,7 @@ int main(void)
     for(;;){
         if(print) {
             sprintf(str,"%.2fHz\r\n",freq);
-            sendStrBySerial(str);
+            serial_print(str);
             print = false; // reset print flag
         }
     }
