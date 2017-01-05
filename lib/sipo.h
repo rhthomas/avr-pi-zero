@@ -14,32 +14,32 @@ volatile struct {
 
 void setup_sipo(uint8_t dataPin, uint8_t latchPin, uint8_t clockPin, uint8_t num)
 {
-    regs.data = _BV(dataPin);
-    regs.latch = _BV(latchPin);
-    regs.clock = _BV(clockPin);
-    regs.bits = 8*num;
+    sipo.data = _BV(dataPin);
+    sipo.latch = _BV(latchPin);
+    sipo.clock = _BV(clockPin);
+    sipo.bits = 8*num;
 
     // set control pins as outputs and initialise low
-    DDRB |= (regs.data | regs.latch | regs.clock);
-    PORTB &= ~(regs.data | regs.latch | regs.clock);
+    DDRB |= (sipo.data | sipo.latch | sipo.clock);
+    PORTB &= ~(sipo.data | sipo.latch | sipo.clock);
 }
 
 void shift_out(uint8_t val)
 {
-    for(uint8_t i=0; i<bits; i++) {
+    for(uint8_t i=0; i<sipo.bits; i++) {
         // tests MSB of val
-        if(val & pow(2,bits-1)) { // 0b10000000 for one 595
-            PORTB |= regs.data;
+        if(val & pow(2,sipo.bits-1)) { // 0b10000000 for one 595
+            PORTB |= sipo.data;
         }
         else {
-            PORTB &= ~regs.data;
+            PORTB &= ~sipo.data;
         }
         // pulse the clock
-        PORTB |= regs.clock;
-        PORTB &= ~regs.clock;
+        PORTB |= sipo.clock;
+        PORTB &= ~sipo.clock;
         val<<=1; // move next bit to MSB
     }
     // data set, move to output
-    PORTB |= regs.latch;
-    PORTB &= ~regs.latch;
+    PORTB |= sipo.latch;
+    PORTB &= ~sipo.latch;
 }

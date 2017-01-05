@@ -35,9 +35,9 @@ int shift_in()
     PORTB |= piso.pload;
 
     // get bits stored in '165
-    for(int i=0; i<bits; i++) {
+    for(int i=0; i<piso.bits; i++) {
         bitVal = PINB & piso.data; // read value of data pin
-        pisoVal |= (bitVal << (bits-1-i));
+        pisoVal |= (bitVal << (piso.bits-1-i));
         // cycle clock for next value
         PORTB |= piso.clock;
         PORTB &= ~piso.clock;
