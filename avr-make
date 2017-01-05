@@ -1,11 +1,14 @@
 #!/bin/bash
-# upload c code to attiny85
+# upload c code to avr microcontrollers
+# useage: ./avr-make <board> <file.c> <additional args>
+#         ./avr-make attiny85 blink.c
+# clock speed F_CPU must be defined in the .c file
 
-echo "Compiling" $1
+echo "Compiling $2 for $1..."
 
 # generate elf
 touch "temp.avr-gcc.output"
-avr-gcc -mmcu=attiny85 -Os $@ -Wall -o temp.elf -std=c99 >> temp.avr-gcc.output 2>&1
+avr-gcc -mmcu=$1 -Os ${@:2} -Wall -o temp.elf -std=c99 >> temp.avr-gcc.output 2>&1
 if [[ -f temp.elf ]]
 then
     echo "Successfully compiled"
@@ -18,7 +21,7 @@ then
         echo "Complete"
         echo "Writing file to device..."
         # uploading to board
-        sudo avrdude -c linuxgpio -p t85 -U flash:w:temp.hex
+        sudo avrdude -c linuxgpio -p $1 -U flash:w:temp.hex
     else
         echo "Failed to generate hex"
         cat temp.avr-objcopy.output
