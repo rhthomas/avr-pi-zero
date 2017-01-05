@@ -11,7 +11,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include "debug.h"
+#include "lib/debug.h"
 
 int main(void)
 {

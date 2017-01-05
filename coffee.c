@@ -9,7 +9,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "sipo.h"
+#include "lib/sipo.h"
 
 volatile uint8_t time;
 

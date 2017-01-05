@@ -13,7 +13,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdbool.h>
-#include "debug.h"
+#include "lib/debug.h"
 
 volatile bool print=false; // flag to tell main to print
 volatile uint16_t overflow=0; // number times the system overflows
