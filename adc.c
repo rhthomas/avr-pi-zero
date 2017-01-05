@@ -34,7 +34,7 @@ int main(void)
 
     initAdc();
     // data,latch,clock,num
-    shiftInit(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3,1);
 
     for(;;) {
         /* drop the last 2 bits of the adc reading since
@@ -45,7 +45,7 @@ int main(void)
         // max led to light up, this is effectivly log_2(result)
         ledNum = log(result)/log(2);
         // shift 1 to the led to turn on
-        shiftOut(1<<ledNum);
+        shift_out(1<<ledNum);
         _delay_ms(100);
     }
     return 0;

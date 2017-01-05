@@ -16,9 +16,9 @@ volatile uint8_t time;
 void flash(void)
 {
     for(uint8_t i=0; i<10; i++) {
-        shiftOut(0xff);
+        shift_out(0xff);
         _delay_ms(50);
-        shiftOut(0x00);
+        shift_out(0x00);
         _delay_ms(50);
     }
 }
@@ -40,14 +40,14 @@ int main(void)
 {
     intInit();
     // data,latch,clock
-    shiftInit(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3,1);
 
     // clear register of old code data
-    shiftOut(0x00);
+    shift_out(0x00);
 
     for(;;) {
         if(time!=0) {
-            shiftOut(time);
+            shift_out(time);
             // 4mins, 8 leds, 30s/led
             _delay_ms(30000);
             time>>=1;

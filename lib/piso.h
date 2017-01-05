@@ -8,7 +8,7 @@
 #include <avr/io.h>
 
 volatile struct {
-    uint8_t data, pload, clock, num;
+    uint8_t data, pload, clock, bits;
 } piso;
 
 void setup_piso(uint8_t dataPin, uint8_t ploadPin, uint8_t clockPin, uint8_t num)
@@ -16,7 +16,7 @@ void setup_piso(uint8_t dataPin, uint8_t ploadPin, uint8_t clockPin, uint8_t num
     piso.data = _BV(dataPin);
     piso.pload = _BV(ploadPin);
     piso.clock = _BV(clockPin);
-    piso.num = num;
+    piso.bits = 8*num;
 
     // piso inputs, initialise pload high and clock low
     DDRB |= (piso.pload | piso.clock);
@@ -35,9 +35,9 @@ int shift_in()
     PORTB |= piso.pload;
 
     // get bits stored in '165
-    for(int i=0; i<8; i++) {
+    for(int i=0; i<bits; i++) {
         bitVal = PINB & piso.data; // read value of data pin
-        pisoVal |= (bitVal << (7-i));
+        pisoVal |= (bitVal << (bits-1-i));
         // cycle clock for next value
         PORTB |= piso.clock;
         PORTB &= ~piso.clock;

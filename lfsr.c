@@ -13,8 +13,8 @@
 int main(void)
 {
     // data,latch,clock
-    shiftInit(PB0,PB1,PB3,1);
-    shiftOut(0x00);
+    setup_sipo(PB0,PB1,PB3,1);
+    shift_out(0x00);
 
     DDRB &= ~_BV(PB2); // set PB2 as input
     PORTB |= _BV(PB2); // enable pullups
@@ -24,7 +24,7 @@ int main(void)
     uint8_t lfsr = start_state;
 
     // show the initial state
-    shiftOut(lfsr);
+    shift_out(lfsr);
 
     for(;;) {
         if(PINB & _BV(PB2)) {
@@ -35,7 +35,7 @@ int main(void)
             do {
                 bit = ((lfsr & 0b00001000) ^ (lfsr & 0b00000001)) & 1;
                 lfsr = (lfsr>>1) | (bit<<7);
-                shiftOut(lfsr);
+                shift_out(lfsr);
                 _delay_ms(200);
             } while(lfsr!=start_state);
         }

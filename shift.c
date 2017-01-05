@@ -13,12 +13,12 @@
 int main(void)
 {
     // data,latch,clock,num
-    shiftInit(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3,1);
 
     for(;;) {
         // counts from 0 to 255 and displays on leds
         for(uint8_t msg=0; msg<256; msg++) {
-            shiftOut(msg);
+            shift_out(msg);
             _delay_ms(100);
         }
     }
