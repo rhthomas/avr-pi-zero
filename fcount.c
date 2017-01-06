@@ -64,7 +64,7 @@ int main(void)
     PORTB &= ~_BV(PB4);
 
     setup_serial(PB3);
-    inti_timer1();
+    init_timer1();
     setup_interrupts();
     sei();
 
