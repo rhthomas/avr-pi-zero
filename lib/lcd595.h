@@ -4,7 +4,7 @@
 /* Header to drive HD44780 lcd controller using '595
  * sipo chip. Derived from Bruce Hall's lcd code at
  * http://w8bh.net/avr/AvrLCD1.pdf
- * IN PROGRESS!
+ * IN PROGRESS! NOT YET TESTED
  */
 
 #include <avr/io.h>
@@ -12,33 +12,29 @@
 
 typedef uint8_t byte; // quicker than uint8_t
 
-// lcd pins
-//#define LCD_RS PB0
-//#define LCD_E  PB1
-//#define DATA4  PB2
-//#define DATA5  PB3
-//#define DATA6  PB4
-//#define DATA7  PB5
-
 // 595 to lcd connections
-// Q0 - x
-// Q1 - x
-// Q2 - LCD_RS
-// Q3 - LCD_E
-// Q4 - DATA4
-// Q5 - DATA5
-// Q6 - DATA6
-// Q7 - DATA7
+// Q0 - LCD_RS
+// Q1 - LCD_E
+// Q2 - DATA4
+// Q3 - DATA5
+// Q4 - DATA6
+// Q5 - DATA7
+// Q6 - nc
+// Q7 - nc
 
 // controller commands
 #define CLEAR     0x01
 #define SETCURSOR 0x80
 
 // send top 4 bits, pulse enable, send bottom 4 bits
+// can probably remove this function since the E pin needs to be pulsed while
+// data[7:4] are set, currently this function is pulsing E but resetting data
+// to 0000, so either put this function code into the send_nibble function or add
+// argument that takes the data. Clearly theres no need for the function
 void pulse_lcd_enable(void)
 {
     //PORTB |= _BV(LCD_E);
-    shift_out(0x08); // 0b0000.10xx
+    shift_out(0x02); // 0bxx00.0010
     _delay_us(40); // check datasheet for this
     //PORTB &= ~_BV(LCD_E);
     shift_out(0x00);
@@ -47,15 +43,26 @@ void pulse_lcd_enable(void)
 // sends 4 bits of a byte message
 void send_nibble(byte data, byte cmd)
 {
-    //PORTB &= 0xC3; // 11000011 = clear 4 data lines
-    shift_out(0x00); // 0000.00xx = clear 4 data lines
+    //PORTB &= 0xC3; // 1100.0011 = clear 4 data lines
+    shift_out(0x02); // xx00.0011 = clear 4 data lines
     byte shift;
     //if (data & (1<<4)) PORTB |= _BV(DATA4);
     //if (data & (1<<5)) PORTB |= _BV(DATA5);
     //if (data & (1<<6)) PORTB |= _BV(DATA6);
     //if (data & (1<<7)) PORTB |= _BV(DATA7);
-    shift_out((data & 0xF0) | (cmd & 0x04)); // if cmd, R/S is low
-    pulse_lcd_enable();
+
+    // creates bit structure for '595
+    // data is bits [5:2] of '595 so 0b1011.0100 -> 0b1011.0000 -> 0b0010.1100
+    byte toShift = (data & 0xF0) >> 2 /* get upper 4 bits and shift down 2 */
+                   | (cmd & 0x01);    /* is it a cmd or char? */
+
+    //pulse_lcd_enable();
+
+    // NOTE: |0x00 will not clear that bit! need to rethink
+    // pulse the E pin on the lcd with the data
+    shift_out(toShift | 0x02); // set E high
+    _delay_us(40); // probably dont need this with the shift_out function (slow)
+    shift_out(toShift | 0x00); // set E low
 }
 
 // send byte of data. calls send_nibble to get upper/lower 4 bits
@@ -76,21 +83,19 @@ void lcd_cmd(byte cmd)
 void lcd_char(byte ch)
 {
     //PORTB |= _BV(LCD_RS); // R/S line high = character data
-    //shift_out(0x04); // 0b0000.01xx
     send_byte(ch,1);
 }
 
 // setup parameters for the lcd. see datasheet
 void setup_lcd(void)
 {
-	// TODO: convert binarys!
-	// Bruce used xx.data[7:4].E.RS
-    lcd_cmd(0x33); // 0b0011.0011 // init the controller
-    lcd_cmd(0x32); // 0b0011.0010 // set to 4-bit input mode
-    lcd_cmd(0x28); // 0b0010.1000 // 2 line, 5x7 matrix
-    lcd_cmd(0x0C); // 0b0000.1100 // turn cursor off, on with 0x0E
-    lcd_cmd(0x06); // 0b0000.0110 // cursor direction = right
-    lcd_cmd(0x01); // 0b0000.0001 // start with clear display
+	// data structure: xx.data[7:4].E.RS
+    lcd_cmd(0x33); // 0bxx11.0011 // init the controller
+    lcd_cmd(0x32); // 0bxx11.0010 // set to 4-bit input mode
+    lcd_cmd(0x28); // 0bxx10.1000 // 2 line, 5x7 matrix
+    lcd_cmd(0x0C); // 0bxx00.1100 // turn cursor off, on with 0x0E
+    lcd_cmd(0x06); // 0bxx00.0110 // cursor direction = right
+    lcd_cmd(0x01); // 0bxx00.0001 // start with clear display
     _delay_ms(3);  // wait for lcd to initialise
 }
 
