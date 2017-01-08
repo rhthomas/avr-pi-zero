@@ -16,8 +16,9 @@ int main(void)
     setup_lcd();
 
     for(;;) {
-        // will \n put cursor on a new line?
-        lcd_print("Hello,\nWorld!");
+        lcd_print("Hello,");
+        lcd_cursor(0,1); // move to next line
+        lcd_print("World!");
         _delay_ms(1000);
         lcd_clear();
     }
