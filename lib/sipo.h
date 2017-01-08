@@ -28,7 +28,7 @@ void shift_out(uint8_t val)
 {
     for(uint8_t i=0; i<sipo.bits; i++) {
         // tests MSB of val
-        if(val & pow(2,sipo.bits-1)) { // 0b10000000 for one 595
+        if(val & (int)pow(2,sipo.bits-1)) { // 0b10000000 for one 595
             PORTB |= sipo.data;
         }
         else {

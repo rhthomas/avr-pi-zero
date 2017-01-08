@@ -3,6 +3,7 @@
 // created : 2017-01-04
 /* Header contains functins to drive 74HC165 8-bit
  * parallel-in/serial-out shift register.
+ * NOT YET TESTED!
  */
 
 #include <avr/io.h>
@@ -26,7 +27,7 @@ void setup_piso(uint8_t dataPin, uint8_t ploadPin, uint8_t clockPin, uint8_t num
     PORTB |= piso.data;
 }
 
-int shift_in()
+int shift_in(void)
 {
     int pisoVal=0, bitVal=0;
 
@@ -42,4 +43,5 @@ int shift_in()
         PORTB |= piso.clock;
         PORTB &= ~piso.clock;
     }
+    return pisoVal;
 }
