@@ -8,7 +8,6 @@
  * it compiles! now need to hook up lcd to see if it actually works
  */
 
-#include <avr/io.h>
 #include "sipo.h"
 
 // 595 to lcd connections
@@ -29,7 +28,7 @@ void send_nibble(uint8_t data, uint8_t cmd)
 {
     // is this necessary? will have to test
     //PORTB &= 0xC3; // 1100.0011 = clear 4 data lines
-    shift_out(0x03); // xx00.0011 = clear 4 data lines
+    //shift_out(0x03); // xx00.0011 = clear 4 data lines
 
     //if (data & (1<<4)) PORTB |= _BV(DATA4);
     //if (data & (1<<5)) PORTB |= _BV(DATA5);
@@ -38,7 +37,7 @@ void send_nibble(uint8_t data, uint8_t cmd)
 
     // creates bit structure for '595
     // eg. data = 0b1011.0100 -> 0b1011.0000 -> 0b0010.1100
-    // | (cmd & 0x01) adds the bit for R/S assertion
+    // |cmd  adds the bit for R/S assertion
     uint8_t toShift = ((data & 0xF0) >> 2) | cmd;
 
     // pulse the E pin on the lcd with the data
@@ -72,7 +71,6 @@ void lcd_char(uint8_t ch)
 void setup_lcd(void)
 {
     // data structure: xx.data[7:4].E.RS
-    // these values are from the datasheet
     lcd_cmd(0x33); // 0bxx11.0011 // init the controller
     lcd_cmd(0x32); // 0bxx11.0010 // set to 4-bit input mode
     lcd_cmd(0x28); // 0bxx10.1000 // 2 line, 5x7 matrix
