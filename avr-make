@@ -2,23 +2,21 @@
 # upload c code to avr microcontrollers
 # useage: ./avr-make <board> <file.c> <additional args>
 #         ./avr-make attiny85 blink.c
-# clock speed F_CPU must be defined in the .c file
+# clock speed F_CPU defined in the .c file or arg -DF_CPU=1000000
 
-echo "Compiling $2 for $1..."
+echo "Compiling $2 for $1... "
 
 # generate elf
 touch "temp.avr-gcc.output"
 avr-gcc -mmcu=$1 -Os ${@:2} -Wall -o temp.elf -std=c99 >> temp.avr-gcc.output 2>&1
 if [[ -f temp.elf ]]
 then
-    echo "Successfully compiled"
-    echo "Generating hex file..."
+    echo "Generating hex file... "
     # generate hex
     touch "temp.avr-objcopy.output"
     avr-objcopy -O ihex temp.elf temp.hex >> temp.avr-objcopy.output 2>&1
     if [[ -f temp.hex ]]
     then
-        echo "Complete"
         echo "Writing file to device..."
         # uploading to board
         sudo avrdude -c linuxgpio -p $1 -U flash:w:temp.hex
