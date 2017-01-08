@@ -4,7 +4,7 @@
 /* Header to drive HD44780 lcd controller using '595
  * sipo chip. Derived from Bruce Hall's lcd code at
  * http://w8bh.net/avr/AvrLCD1.pdf
- * IN PROGRESS! NOT YET TESTED
+ * WORK IN PROGRESS! NOT YET TESTED
  * it compiles! now need to hook up lcd to see if it actually works
  */
 
