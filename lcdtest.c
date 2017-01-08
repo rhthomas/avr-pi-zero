@@ -12,7 +12,7 @@
 int main(void)
 {
     // data,latch,clock,num
-    setup_sipo(PB0,PB1,PB2,1);
+    setup_sipo(PB0,PB1,PB2);
     setup_lcd();
 
     lcd_print("Hello");

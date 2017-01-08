@@ -34,7 +34,7 @@ int main(void)
 
     initAdc();
     // data,latch,clock,num
-    setup_sipo(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3);
 
     for(;;) {
         /* drop the last 2 bits of the adc reading since

@@ -13,7 +13,7 @@
 int main(void)
 {
     // data,latch,clock
-    setup_sipo(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3);
     shift_out(0x00);
 
     DDRB &= ~_BV(PB2); // set PB2 as input

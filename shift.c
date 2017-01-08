@@ -13,7 +13,7 @@
 int main(void)
 {
     // data,latch,clock,num
-    setup_sipo(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3);
 
     for(;;) {
         // counts from 0 to 255 and displays on leds

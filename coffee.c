@@ -40,7 +40,7 @@ int main(void)
 {
     intInit();
     // data,latch,clock
-    setup_sipo(PB0,PB1,PB3,1);
+    setup_sipo(PB0,PB1,PB3);
 
     // clear register of old code data
     shift_out(0x00);
