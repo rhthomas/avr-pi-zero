@@ -39,7 +39,7 @@ void send_nibble(uint8_t data, uint8_t cmd)
     // creates bit structure for '595
     // eg. data = 0b1011.0100 -> 0b1011.0000 -> 0b0010.1100
     // | (cmd & 0x01) adds the bit for R/S assertion
-    uint8_t toShift = (data & 0xF0) >> 2 | (cmd & 0x01);
+    uint8_t toShift = ((data & 0xF0) >> 2) | cmd;
 
     // pulse the E pin on the lcd with the data
     shift_out(toShift | 0x02); // set E high w/ data
