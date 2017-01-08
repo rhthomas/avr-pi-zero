@@ -7,7 +7,7 @@
 #define F_CPU 1000000L // 1MHz internal clock
 #include <avr/io.h>
 #include <util/delay.h>
-#include "lib/lcd595.h"
+#include "lib/lcd595_8bit.h"
 
 int main(void)
 {
@@ -15,8 +15,6 @@ int main(void)
     setup_sipo(PB0,PB1,PB2,1);
     setup_lcd();
 
-    _delay_ms(1000);
-    lcd_clear();
     lcd_print("Hello");
 
     for(;;) {}
