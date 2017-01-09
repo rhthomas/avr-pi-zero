@@ -18,10 +18,9 @@
 
 // libraries
 #include <avr/io.h>
-// #include <util/delay.h>
 #include "sipo.h"
 
-#define LCD_CMD_DELAY 2 // [ms] TEST THIS VALUE! MIGHT NEED ADJUSTING
+#define CMD_DELAY 2 // [ms] TEST THIS VALUE! MIGHT NEED ADJUSTING
 
 // global variable
 volatile uint8_t sipoData=0;
@@ -34,6 +33,18 @@ volatile uint8_t sipoData=0;
 #define SET_4_BIT  0x28 // 4-bit data, 2-line display, 5*7 font
 #define SET_CURSOR 0x80 // set cursor position
 
+// function declarations
+void setup_lcd(void);
+void lcd_print(const char *text);
+void lcd_cursor(uint8_t x, uint8_t y);
+void lcd_clear(void);
+void lcd_home(void);
+void lcd_cmd(uint8_t cmd);
+void lcd_char(uint8_t data);
+uint8_t arrange_data(uint8_t data, uint8_t rs);
+void pulse_enable(void);
+void wait_busy(void);
+
 // user functions
 void setup_lcd(void)
 {
@@ -45,21 +56,21 @@ void setup_lcd(void)
 
     _delay_ms(50);
 
-    sipo_data = arrange_data(0x18,0); // DB4=DB5=1, RS=0
+    sipoData = arrange_data(0x18,0); // DB4=DB5=1, RS=0
 
-    shift_out(sipo_data);
+    shift_out(sipoData);
     pulse_enable();
     _delay_ms(10);
-    shift_out(sipo_data);
+    shift_out(sipoData);
     pulse_enable();
     _delay_ms(5);
-    shift_out(sipo_data);
+    shift_out(sipoData);
     pulse_enable();
     _delay_ms(5);
 
-    sipo_data = arrange_data(0x10,0); // DB5=1, RS=0
+    sipoData = arrange_data(0x10,0); // DB5=1, RS=0
 
-    shift_out(sipo_data);
+    shift_out(sipoData);
     pulse_enable();
     _delay_ms(5);
 
@@ -67,7 +78,7 @@ void setup_lcd(void)
     lcd_cmd(DISPLAY_ON); // display on cursor off
     lcd_cmd(ENTRY); // auto inc, display shift off
     lcd_cmd(SET_CURSOR); // cursor home
-    lcd_cmd(CLEAR); // clear lcd (test this!)
+    lcd_cmd(CLEAR); // clear lcd
 }
 
 void lcd_print(const char *text)
@@ -85,10 +96,11 @@ void lcd_cursor(uint8_t x, uint8_t y)
     if(y==1) addr = 0x40; // line 1 begins at 0x40
     lcd_cmd(SET_CURSOR+addr+x); // update cursor with x,y pos
 }
+
 void lcd_clear(void)
 {
     lcd_cmd(CLEAR);
-    _delay_ms(3); // wait for lcd to process cmd
+    _delay_ms(CMD_DELAY); // wait for lcd to process cmd
 }
 
 void lcd_home(void)
@@ -101,13 +113,13 @@ void lcd_cmd(uint8_t cmd)
     wait_busy();
 
     // send high byte, RS=E=0
-    sipo_data = arrange_data(cmd,0);
-    shift_out(sipo_data);
+    sipoData = arrange_data(cmd,0);
+    shift_out(sipoData);
     pulse_enable();
 
     // send low byte, RS=E=0
-    sipo_data = arrange_data(cmd<<=4,0);
-    shift_out(sipo_data);
+    sipoData = arrange_data(cmd<<=4,0);
+    shift_out(sipoData);
     pulse_enable();
 }
 
@@ -116,13 +128,13 @@ void lcd_char(uint8_t data)
     wait_busy();
 
     // send high byte, RS=1, E=0
-    sipo_data = arrange_data(data,1);
-    shift_out(sipo_data);
+    sipoData = arrange_data(data,1);
+    shift_out(sipoData);
     pulse_enable();
 
     // send low byte, RS=1, E=0
-    sipo_data = arrange_data(data<<=4,1);
-    shift_out(sipo_data);
+    sipoData = arrange_data(data<<=4,1);
+    shift_out(sipoData);
     pulse_enable();
 }
 
@@ -134,9 +146,9 @@ uint8_t arrange_data(uint8_t data, uint8_t rs)
 
 void pulse_enable(void)
 {
-    shift_out(sipo_data | 0x02);
+    shift_out(sipoData | 0x02);
     _delay_us(1);
-    shift_out(sipo_data & ~(0x02));
+    shift_out(sipoData & ~(0x02));
 }
 
 void wait_busy(void)
