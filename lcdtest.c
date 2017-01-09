@@ -15,12 +15,15 @@ int main(void)
     setup_sipo(PB0,PB1,PB2);
     setup_lcd();
 
-    lcd_clear(); // doesnt work without this
-    lcd_print("Rhys Thomas");
-    _delay_ms(2000);
-    lcd_cursor(0,1);
-    lcd_print("usr: rhthomas");
+    _delay_ms(1000);
 
-    for(;;) {}
+    for(;;) {
+        lcd_print("Hello,");
+        lcd_cursor(0,1);
+        lcd_print("      World!");
+        _delay_ms(1000);
+        lcd_clear();
+        _delay_ms(1000);
+    }
     return 0;
 }

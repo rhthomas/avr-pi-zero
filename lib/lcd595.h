@@ -20,8 +20,6 @@
 #include <avr/io.h>
 #include "sipo.h"
 
-#define CMD_DELAY 2
-
 // global variable
 volatile uint8_t sipoData=0;
 
@@ -55,42 +53,20 @@ void setup_lcd(void)
     shift_out(0x00);
      _delay_ms(50);
 
-    // sipoData = arrange_data(0x18,0); // DB4=DB5=1, RS=0
-
-    // shift_out(sipoData);
-    // pulse_enable();
-    // _delay_ms(10);
-    // shift_out(sipoData);
-    // pulse_enable();
-    // _delay_ms(5);
-    // shift_out(sipoData);
-    // pulse_enable();
-    // _delay_ms(5);
-
-    // sipoData = arrange_data(0x10,0); // DB5=1, RS=0
-
-    // shift_out(sipoData);
-    // pulse_enable();
-    // _delay_ms(5);
-
-    // lcd_cmd(SET_4_BIT); // 4-bit, 2 line, 5x7 font
-    // lcd_cmd(DISPLAY_ON); // display on cursor off
-    // lcd_cmd(ENTRY); // auto inc, display shift off
-    // lcd_cmd(SET_CURSOR); // cursor home
-    // lcd_cmd(CLEAR); // clear lcd
-
-    // Kier's implementation
+    // setup for 4-bit mode
+    send_nibble(0x03);
+    _delay_ms(4.5);
     send_nibble(0x03);
     _delay_ms(4.5);
     send_nibble(0x03);
     _delay_us(150);
-    send_nibble(0x03);
-    _delay_us(150);
-    send_nibble(0x02); // 4-bit bus width
+
+    // 4-bit bus width
+    send_nibble(0x02);
     _delay_us(150);
 
     lcd_cmd(SET_4_BIT);
-    _delay_us(37);
+    _delay_us(40);
 
     lcd_cmd(DISPLAY_OFF);
     lcd_cmd(CLEAR);
@@ -100,7 +76,7 @@ void setup_lcd(void)
 
 void send_nibble(uint8_t code)
 {
-    sipoData = arrange_data(cmd,0);
+    sipoData = arrange_data(code,0);
     shift_out(sipoData);
     pulse_enable();
 }
@@ -124,7 +100,6 @@ void lcd_cursor(uint8_t x, uint8_t y)
 void lcd_clear(void)
 {
     lcd_cmd(CLEAR);
-    _delay_ms(CMD_DELAY); // wait for lcd to process cmd
 }
 
 void lcd_home(void)
@@ -134,8 +109,6 @@ void lcd_home(void)
 
 void lcd_cmd(uint8_t cmd)
 {
-    wait_busy();
-
     // send high byte, RS=E=0
     sipoData = arrange_data(cmd,0);
     shift_out(sipoData);
@@ -145,12 +118,12 @@ void lcd_cmd(uint8_t cmd)
     sipoData = arrange_data(cmd<<=4,0);
     shift_out(sipoData);
     pulse_enable();
+
+    wait_busy();
 }
 
 void lcd_char(uint8_t data)
 {
-    wait_busy();
-
     // send high byte, RS=1, E=0
     sipoData = arrange_data(data,1);
     shift_out(sipoData);
@@ -160,6 +133,8 @@ void lcd_char(uint8_t data)
     sipoData = arrange_data(data<<=4,1);
     shift_out(sipoData);
     pulse_enable();
+
+    wait_busy();
 }
 
 uint8_t arrange_data(uint8_t data, uint8_t rs)
@@ -171,11 +146,12 @@ uint8_t arrange_data(uint8_t data, uint8_t rs)
 void pulse_enable(void)
 {
     shift_out(sipoData | 0x02);
-    _delay_us(1);
+    _delay_us(40); // needs to be held for at least 37us
     shift_out(sipoData & ~(0x02));
+    _delay_us(40);
 }
 
 void wait_busy(void)
 {
-    _delay_ms(CMD_DELAY);
+    _delay_ms(2);
 }
