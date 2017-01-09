@@ -20,18 +20,19 @@
 #include <avr/io.h>
 #include "sipo.h"
 
-#define CMD_DELAY 2 // [ms] TEST THIS VALUE! MIGHT NEED ADJUSTING
+#define CMD_DELAY 2
 
 // global variable
 volatile uint8_t sipoData=0;
 
 // controller commands
-#define CLEAR      0x01 // clear lcd
-#define HOME       0x02 // return cursor home
-#define ENTRY      0x06 // shift cursor from left to right on read/write
-#define DISPLAY_ON 0x0C // display on, cursor off, dont blink
-#define SET_4_BIT  0x28 // 4-bit data, 2-line display, 5*7 font
-#define SET_CURSOR 0x80 // set cursor position
+#define CLEAR       0x01 // clear lcd
+#define HOME        0x02 // return cursor home
+#define ENTRY       0x06 // shift cursor from left to right on read/write
+#define DISPLAY_ON  0x0C // display on, cursor off, dont blink
+#define DISPLAY_OFF 0x08 // display off
+#define SET_4_BIT   0x28 // 4-bit data, 2-line display, 5*7 font
+#define SET_CURSOR  0x80 // set cursor position
 
 // function declarations
 void setup_lcd(void);
@@ -49,36 +50,59 @@ void wait_busy(void);
 void setup_lcd(void)
 {
     _delay_ms(50); // wait for lcd to warm up
-
     // data,latch,clock
     setup_sipo(PB0,PB1,PB2);
     shift_out(0x00);
+     _delay_ms(50);
 
-    _delay_ms(50);
+    // sipoData = arrange_data(0x18,0); // DB4=DB5=1, RS=0
 
-    sipoData = arrange_data(0x18,0); // DB4=DB5=1, RS=0
+    // shift_out(sipoData);
+    // pulse_enable();
+    // _delay_ms(10);
+    // shift_out(sipoData);
+    // pulse_enable();
+    // _delay_ms(5);
+    // shift_out(sipoData);
+    // pulse_enable();
+    // _delay_ms(5);
 
+    // sipoData = arrange_data(0x10,0); // DB5=1, RS=0
+
+    // shift_out(sipoData);
+    // pulse_enable();
+    // _delay_ms(5);
+
+    // lcd_cmd(SET_4_BIT); // 4-bit, 2 line, 5x7 font
+    // lcd_cmd(DISPLAY_ON); // display on cursor off
+    // lcd_cmd(ENTRY); // auto inc, display shift off
+    // lcd_cmd(SET_CURSOR); // cursor home
+    // lcd_cmd(CLEAR); // clear lcd
+
+    // Kier's implementation
+    send_nibble(0x03);
+    _delay_ms(4.5);
+    send_nibble(0x03);
+    _delay_us(150);
+    send_nibble(0x03);
+    _delay_us(150);
+    send_nibble(0x02); // 4-bit bus width
+    _delay_us(150);
+
+    lcd_cmd(SET_4_BIT);
+    _delay_us(37);
+
+    lcd_cmd(DISPLAY_OFF);
+    lcd_cmd(CLEAR);
+    lcd_cmd(ENTRY);
+    lcd_cmd(DISPLAY_ON);
+}
+
+void send_nibble(uint8_t code)
+{
+    sipoData = arrange_data(cmd,0);
     shift_out(sipoData);
     pulse_enable();
-    _delay_ms(10);
-    shift_out(sipoData);
-    pulse_enable();
-    _delay_ms(5);
-    shift_out(sipoData);
-    pulse_enable();
-    _delay_ms(5);
-
-    sipoData = arrange_data(0x10,0); // DB5=1, RS=0
-
-    shift_out(sipoData);
-    pulse_enable();
-    _delay_ms(5);
-
-    lcd_cmd(SET_4_BIT); // 4-bit, 2 line, 5x7 font
-    lcd_cmd(DISPLAY_ON); // display on cursor off
-    lcd_cmd(ENTRY); // auto inc, display shift off
-    lcd_cmd(SET_CURSOR); // cursor home
-    lcd_cmd(CLEAR); // clear lcd
 }
 
 void lcd_print(const char *text)
