@@ -4,6 +4,7 @@
 /* Library to drive HD44780 lcd controller using '595
  * sipo chip. Adapted from Eka Puji Widiyanto's lcd_lib.c
  * at https://github.com/ekapujiw2002/ex4-avr-gcc-library/
+ * and the LiquidCrystal595.h Arduino library
  */
 
 // 595 to lcd connections
@@ -44,7 +45,6 @@ uint8_t arrange_data(uint8_t data, uint8_t rs);
 void pulse_enable(void);
 void wait_busy(void);
 
-// user functions
 void setup_lcd(void)
 {
     _delay_ms(50); // wait for lcd to warm up
