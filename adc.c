@@ -33,7 +33,7 @@ int main(void)
     uint8_t result,ledNum;
 
     initAdc();
-    // data,latch,clock,num
+    // data,latch,clock
     setup_sipo(PB0,PB1,PB3);
 
     for(;;) {
