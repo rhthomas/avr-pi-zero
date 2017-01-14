@@ -4,6 +4,10 @@
 #         ./avr-make attiny85 blink.c
 # clock speed F_CPU defined in the .c file or arg -DF_CPU=1000000
 
+if [[ $# -eq 0 ]]; then
+    echo "No arguments."; exit 1
+fi
+
 echo "Compiling $2 for $1... "
 
 # generate elf
