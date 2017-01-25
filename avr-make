@@ -1,6 +1,6 @@
 #!/bin/bash
 # upload c code to avr microcontrollers
-# useage: ./avr-make <board> <file.c> <additional args>
+# usage: ./avr-make <board> <file.c> <additional args>
 #         ./avr-make attiny85 blink.c
 # clock speed F_CPU defined in the .c file or arg -DF_CPU=1000000
 
